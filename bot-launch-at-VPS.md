@@ -18,6 +18,10 @@ $ sudo systemctl start ai-diet-planner
 ```
 $ sudo systemctl status ai-diet-planner.service
 ```
+## Logs
+```
+journalctl -u ai-diet-planner -f --since "5 min ago"
+```
 
 ## Pull updates
 ```
