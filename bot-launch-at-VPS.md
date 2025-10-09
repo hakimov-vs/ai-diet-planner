@@ -8,11 +8,6 @@
 📜 logs:  `journalctl -u ai-diet-planner -f --since "5 min ago"`  
 
 
-## Restart
-```
-$ sudo systemctl daemon-reexec
-```
-
 ## Enable and start
 ```
 $ sudo systemctl enable ai-diet-planner
@@ -33,4 +28,9 @@ git pull origin main
 ## Restart service to use new code
 ```
 sudo systemctl restart ai-diet-planner
+```
+
+## Restart the "init system" and system manager (`systemd`)
+```
+$ sudo systemctl daemon-reexec
 ```
