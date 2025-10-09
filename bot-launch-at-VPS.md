@@ -10,13 +10,13 @@
 
 ## Enable and start
 ```
-$ sudo systemctl enable ai-diet-planner
-$ sudo systemctl start ai-diet-planner
+sudo systemctl enable ai-diet-planner
+sudo systemctl start ai-diet-planner
 ```
 
 ## Check if successful
 ```
-$ sudo systemctl status ai-diet-planner.service
+sudo systemctl status ai-diet-planner.service
 ```
 ## Logs
 ```
@@ -36,5 +36,5 @@ sudo systemctl restart ai-diet-planner
 
 ## Restart the "init system" and system manager (`systemd`)
 ```
-$ sudo systemctl daemon-reexec
+sudo systemctl daemon-reexec
 ```
