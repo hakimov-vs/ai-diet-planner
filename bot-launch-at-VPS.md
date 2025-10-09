@@ -24,11 +24,13 @@ $ sudo systemctl status ai-diet-planner.service
 ```
 
 ## Pull updates
-```cd /opt/ai-diet-planner
+```
+cd /opt/ai-diet-planner
 git pull origin main
 ```
 
 ## Restart service to use new code
-```sudo systemctl restart ai-diet-planner
+```
+sudo systemctl restart ai-diet-planner
 ```
 
