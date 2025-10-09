@@ -47,22 +47,22 @@ The `systemctl daemon-reexec` command shuts down and restarts the systemd proces
 Think of it as "restarting the manager" **without restarting the entire server**. It's a way to reload the systemd daemon's configuration and internal state without a full system reboot.
 
 ## The Detailed Explanation
-To understand this, you first need to know what **systemd** is.
+To understand this, you first need to know what `**`systemd**` is.
 
 ### What is "systemd"?
-**systemd** is the "init system" and system manager on most modern Linux distributions (including those running on your VPS). It is the first process that runs when the server boots (it has Process ID 1, or PID 1). Its job is to manage all other services and processes—starting them, stopping them, logging their output, and managing dependencies.
+`**systemd**` is the "init system" and system manager on most modern Linux distributions (including those running on your VPS). It is the first process that runs when the server boots (it has Process ID 1, or PID 1). Its job is to manage all other services and processes—starting them, stopping them, logging their output, and managing dependencies.
 
-### What is the "systemd daemon"?
+### What is the `"systemd daemon"`?
 The "daemon" is the core background process (/usr/lib/systemd/systemd) that does all the work mentioned above. It's the brain of the operation.
 
-### What does daemon-reexec do?
+### What does `daemon-reexec` do?
 When you run sudo systemctl daemon-reexec, you are telling the currently running systemd process to:
 
-- Re-execute itself. It starts a new copy of the systemd binary (/usr/lib/systemd/systemd).
+- Re-execute itself. It starts a new copy of the systemd binary (`/usr/lib/systemd/systemd`).
 
 - Replace itself. The new systemd process takes over the same PID 1.
 
-- Re-read its own configuration. During this re-execution, it parses its main configuration files (like those in /etc/systemd/system.conf and unit files) again.
+- Re-read its own configuration. During this re-execution, it parses its main configuration files (like those in `/etc/systemd/system.conf` and unit files) again.
 
 Crucially, this does NOT restart the services that systemd is managing. Services like your web server (nginx/apache), database (MySQL/PostgreSQL), and SSH will continue running uninterrupted.
 
