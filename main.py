@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # main.py
 import logging
 import json
@@ -444,7 +443,7 @@ async def menu_confirmation(update: Update, context: ContextTypes.DEFAULT_TYPE) 
     # Handle different response types
     if response == 'yes':
         await query.edit_message_text(
-            "Great! I'm generating your personalized menu for a week. 🥗 🍱 🌮 This may take a moment...🙂🙂🙂"
+            "Great! I'm generating your personalized weekly menu. 🍽️ 🙂🙂🙂 This may take a moment..."
         )
         
         # Generate weekly menu using AI
@@ -464,13 +463,21 @@ async def menu_confirmation(update: Update, context: ContextTypes.DEFAULT_TYPE) 
         else:
             await query.message.reply_text(
                 "I apologize, but I'm having trouble generating your menu at the moment. "
-                "Please try again later or contact support if the issue persists."
+                "Please try again later or contact support if the issue persists.",
             )
             # Show navigation options even if menu generation failed
             await show_navigation_options(query.message, context)
             return ConversationHandler.END
             
     elif response == 'no':
+        # Clear any existing user data and restart the conversation
+        user_id = query.from_user.id
+        if user_id in context.user_data:
+            context.user_data.clear()
+        
+        if user_id in user_data_store:
+            del user_data_store[user_id]
+        
         # Ask for gender to start the update process
         keyboard = [
             [InlineKeyboardButton("Male", callback_data="gender_male")],
@@ -495,7 +502,6 @@ async def menu_confirmation(update: Update, context: ContextTypes.DEFAULT_TYPE) 
             reply_markup=reply_markup
         )
         return MENU_CONFIRM
-
 
 async def generate_weekly_menu(user_data):
     """Generate a weekly menu using DeepSeek AI with plain text formatting"""
@@ -954,21 +960,22 @@ def main() -> None:
     application = ApplicationBuilder().token(HTTP_API_BOT_TOKEN).build()
 
     # Add conversation handler with the states
+    # Update the ConversationHandler initialization
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start)],
         states={
-            GENDER: [CallbackQueryHandler(gender)],
+            GENDER: [CallbackQueryHandler(gender, pattern="^gender_")],
             AGE: [MessageHandler(filters.TEXT & ~filters.COMMAND, age)],
             WEIGHT: [MessageHandler(filters.TEXT & ~filters.COMMAND, weight)],
             HEIGHT: [MessageHandler(filters.TEXT & ~filters.COMMAND, height)],
-            ACTIVITY: [CallbackQueryHandler(activity)],
-            GOAL: [CallbackQueryHandler(goal)],
-            MENU_CONFIRM: [CallbackQueryHandler(menu_confirmation)],
-            TIP_AMOUNT: [CallbackQueryHandler(handle_tip_amount)],
+            ACTIVITY: [CallbackQueryHandler(activity, pattern="^activity_")],
+            GOAL: [CallbackQueryHandler(goal, pattern="^goal_")],
+            MENU_CONFIRM: [CallbackQueryHandler(menu_confirmation, pattern="^menu_")],
+            TIP_AMOUNT: [CallbackQueryHandler(handle_tip_amount, pattern="^tip_")],
             TIP_CONFIRM: [MessageHandler(filters.TEXT & ~filters.COMMAND, handle_custom_tip)],
         },
         fallbacks=[CommandHandler('cancel', cancel)],
-        per_message=True,  # Add this line to fix the warning
+        per_message=False,
     )
 
     application.add_handler(conv_handler)
