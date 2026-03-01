@@ -22,3 +22,4 @@ def init_db():
                 'goal' VARCHAR(25)
             )         
         """)
+        

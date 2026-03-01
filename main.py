@@ -1006,6 +1006,7 @@ def main() -> None:
     print("Bot is starting...")
     application.run_polling()
     
+    
 
 if __name__ == '__main__':
     main()
