@@ -1,5 +1,3 @@
-# git command
-
 # main.py
 import logging
 import json
@@ -10,6 +8,7 @@ from telegram.ext import (
     ApplicationBuilder, CommandHandler, MessageHandler, 
     ConversationHandler, ContextTypes, filters, CallbackQueryHandler
 )
+from db import init_db
 
 # Import configuration
 try:
@@ -958,6 +957,9 @@ async def show_main_menu(message, user_id, has_data=False, is_admin=False):
 
 # Main function
 def main() -> None:
+    #Initilize the database
+    init_db()
+
     # Create the Application using ApplicationBuilder with token from config
     application = ApplicationBuilder().token(HTTP_API_BOT_TOKEN).build()
 
@@ -1003,6 +1005,7 @@ def main() -> None:
     # Start the Bot
     print("Bot is starting...")
     application.run_polling()
+    
 
 if __name__ == '__main__':
     main()

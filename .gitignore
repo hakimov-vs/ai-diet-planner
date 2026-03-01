@@ -29,6 +29,9 @@ AI Menu bot ideas.txt
 # Config files
 config.py
 
+#DB
+*.db
+
 # Virtual environments
 venv/
 env/
