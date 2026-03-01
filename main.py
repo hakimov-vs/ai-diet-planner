@@ -8,7 +8,7 @@ from telegram.ext import (
     ApplicationBuilder, CommandHandler, MessageHandler, 
     ConversationHandler, ContextTypes, filters, CallbackQueryHandler
 )
-from db import init_db
+from db import init_db, get_user, set_user
 
 # Import configuration
 try:
@@ -215,8 +215,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     user = update.message.from_user
     user_id = user.id
     
-    # Check if user already has stored data
-    has_previous_data = user_id in user_data_store and user_data_store[user_id].get('calories')
+    # Check if user already has stored in DB
+    has_previous_data = get_user(user_id)
     
     if has_previous_data:
         # User has previous data - show options to generate menu or update info
@@ -378,7 +378,6 @@ async def goal(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         
     # Set the goal
     context.user_data['goal'] = goal_options[goal_idx]
-    logger.info("Goal of %s: %s", user.first_name, context.user_data['goal'])
     
     # Calculate BMR
     weight = context.user_data['weight']
@@ -408,7 +407,13 @@ async def goal(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     
     # Store user data for future use
     user_id = user.id
-    user_data_store[user_id] = context.user_data.copy()
+    ud = context.user_data.copy()
+    try:
+        set_user(user_id, user.username, user.first_name, user.last_name , ud['gender'], ud['age'], ud['weight'], ud['height'], ud['activity'], ud['goal'], ud['bmr'], ud['tdee'], ud['calories'])
+    except Exception as e:
+        logger.error("Error saving user data: %s", e)
+        await update.message.reply_text("There was an error saving your data. Please try again.")
+        return GENDER
     
     # Display results
     keyboard = [
@@ -1005,7 +1010,6 @@ def main() -> None:
     # Start the Bot
     print("Bot is starting...")
     application.run_polling()
-    
     
 
 if __name__ == '__main__':
