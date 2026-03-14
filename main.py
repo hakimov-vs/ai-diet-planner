@@ -1,23 +1,21 @@
 import asyncio
-from aiogram import Bot, Dispatcher, types, Router
+import logging
+from aiogram import Bot, Dispatcher
 from memory.config import BOT_TOKEN
+from handlers.command_handlers import *
 
 bot = Bot(token=BOT_TOKEN)
 
 dp = Dispatcher()
 
-message = Router()
-
-
-@message.message()
-async def echo(message: types.Message):
-    await message.answer(message.text)
-
-
 async def main():
-    dp.include_router(message)
+    dp.include_router(command_handlers)
     await dp.start_polling(bot)
    
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    logging.basicConfig(level=logging.INFO)
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print("Stopped")
